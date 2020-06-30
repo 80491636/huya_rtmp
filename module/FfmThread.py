@@ -5,6 +5,12 @@ from PyQt5.QtCore import QThread, pyqtSignal
 anchor_status = []  # 是否开播的标记
 live_video = None  # subprocess.Popen 返回对象
 is_exit = False  # 退出标识
+filename = ""
+
+
+def get_filename():
+    global filename
+    return filename
 
 
 def get_real_url(room_id):
@@ -38,7 +44,6 @@ def get_real_url(room_id):
 
 class change_status(QThread):
 
-
     def __init__(self, url):
         super(change_status, self).__init__()
         self.url = url
@@ -61,7 +66,7 @@ class change_status(QThread):
 
 
 def prepare(flv_url, file_path):
-    global live_video, is_exit
+    global live_video, is_exit, filename
     # 利用ffmpeg进行录屏
     filename = datetime.datetime.today()
     filename = filename.strftime('%Y-%m-%d-%H%M%S')
@@ -133,6 +138,8 @@ class endRecord(QThread):
     def run(self):
         global live_video, is_exit
         is_exit = True
+        if live_video == None:
+            return
         live_video.stdin.write('q'.encode("GBK"))
         live_video.communicate()
         print("结束 捕获")

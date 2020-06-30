@@ -34,9 +34,9 @@ class HuYaList(QThread):
             obj['playtime'] = self.mendStr(v.find_element_by_class_name("item-time").get_attribute('textContent'))
             obj['playname'] = self.mendStr(v.find_element_by_class_name("msg-nick").get_attribute('textContent'))
             obj['playimg'] = v.find_element_by_class_name("anchor-img").get_attribute('src')
-            # print(obj)
+            # print(type(obj))
             datas.append(obj)
-        print(type(datas))
+        # print(type(datas))
         self.trigger.emit(datas)
         # return datas
 

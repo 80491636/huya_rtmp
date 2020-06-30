@@ -5,13 +5,15 @@
 # 获取虎牙直播的真实流媒体地址。
 # 现在虎牙直播链接需要密钥和时间戳了
 
-# 这里我们提供必要的引用。基本控件位于pyqt5.qtwidgets模块中。
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from mainwindow import Ui_MainWindow
-from module.FfmThread import get_real_url, change_status, recording, endRecord
+from module.FfmThread import get_real_url, change_status, recording, endRecord, get_filename
 
 from module.HuYaList import HuYaList
+from module.SQLSer import SqlSer
+
+play_state = False  # 录制状态
 
 
 # UI类
@@ -19,10 +21,19 @@ class mywindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(mywindow, self).__init__()
         self.setupUi(self)
+        self.sql = SqlSer()
 
-    # 开始捕获
+    """
+    开始捕获视频
+    @return: 
+    """
+
     def start_bt(self):
-
+        global play_state
+        if play_state == True:
+            # 消息：信息
+            QMessageBox.information(self, "警告", "请先结束录制。", QMessageBox.Yes | QMessageBox.No)
+            return
         rid = self.roomlineE.text()
         # self.label.setText("房间号：" + rid.strip())
         real_url = get_real_url(rid.strip())  # 房间源地址
@@ -33,11 +44,25 @@ class mywindow(QMainWindow, Ui_MainWindow):
         # 这个线程没有结束
         self.ffm = recording(real_url, self.path_lineE.text())
         self.ffm.start()
+        self.label_2.setText("开始捕获视频。")
+        play_state = True
+
+    """
+    结束捕获视频
+    @return: 
+    """
 
     def end_bt(self):
-
+        # 这里增加 文件名 和 写入数据库
         self.thread1 = endRecord()
         self.thread1.start()
+        self.label_2.setText("结束捕获视频。")
+        play_state = False
+
+        filename = get_filename()
+        print(filename)  # 2020-06-30-142402.mp4
+        n = self.listWidget.currentRow()
+        self.sql.addData(self.datas[n], filename)
 
     """
     获取直播列表
@@ -56,6 +81,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
     """
 
     def UpText(self, datas):
+        self.datas = datas
         i = 0
         test = 0  # 当前正在直播的位置
         for v in datas:
@@ -76,8 +102,8 @@ class mywindow(QMainWindow, Ui_MainWindow):
             test = test - 1
             self.listWidget.setCurrentRow(test)
             _str = self.listWidget.item(test).text()
-            t = _str.split(" ")
-            self.roomlineE.setText(t[0])
+            txts = _str.split(" ")
+            self.roomlineE.setText(txts[0])
         else:
             self.label_2.setText("已经是第一条了。")
 
