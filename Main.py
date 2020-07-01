@@ -18,6 +18,7 @@ play_state = False  # 录制状态
 
 # UI类
 class mywindow(QMainWindow, Ui_MainWindow):
+
     def __init__(self):
         super(mywindow, self).__init__()
         self.setupUi(self)
@@ -53,6 +54,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
     """
 
     def end_bt(self):
+        global play_state
         # 这里增加 文件名 和 写入数据库
         self.thread1 = endRecord()
         self.thread1.start()
