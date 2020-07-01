@@ -29,23 +29,17 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.sql = SqlSer()
 
     def auto_bt(self):
-        # 将格式字符串转换为时间戳
-        localtime = time.localtime(time.time())
-        ticks = time.time()
-        tm_year = time.strftime("%Y-%m-%d", time.localtime())
-        start = tm_year + " 17:55:00"
-        end = tm_year + " 01:55:00"
-        startTime = time.mktime(time.strptime(start, "%Y-%m-%d %H:%M:%S"))
-        endTime = time.mktime(time.strptime(end, "%Y-%m-%d %H:%M:%S"))
-        print(ticks,startTime,endTime)
         # self.list_bt()
-        # self.timer = AutoTimer("aaa",self.bbb,self.ccc)
-        # self.timer.start()
+        self.timer = AutoTimer(self.start_bt,self.end_bt)
+        self.timer.start()
+        self.timer.trigger.connect(self.endauto)
 
-    def bbb(self):
-        print("bbb函数执行")
-    def ccc(self):
-        print("ccc函数执行")
+    def endauto(self,t):
+        print(t)
+        self.next_bt()
+        
+        self.next_bt()
+
 
     """
     获取直播列表
