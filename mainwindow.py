@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(529, 335)
+        MainWindow.resize(650, 335)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.start_Button = QtWidgets.QPushButton(self.centralwidget)
@@ -51,6 +51,9 @@ class Ui_MainWindow(object):
         self.list_Button = QtWidgets.QPushButton(self.centralwidget)
         self.list_Button.setGeometry(QtCore.QRect(440, 40, 75, 31))
         self.list_Button.setObjectName("list_Button")
+        self.auto_Button = QtWidgets.QPushButton(self.centralwidget)
+        self.auto_Button.setGeometry(QtCore.QRect(550, 40, 75, 31))
+        self.auto_Button.setObjectName("auto_Button")
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -70,3 +73,4 @@ class Ui_MainWindow(object):
         self.label_3.setText(_translate("MainWindow", "直播间房号："))
         self.path_lab.setText(_translate("MainWindow", "保存路径："))
         self.list_Button.setText(_translate("MainWindow", "直播列表"))
+        self.auto_Button.setText(_translate("MainWindow", "自动捕获"))

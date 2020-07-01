@@ -6,8 +6,11 @@
 # 现在虎牙直播链接需要密钥和时间戳了
 
 import sys
+import time
+
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from mainwindow import Ui_MainWindow
+from module.AutoTimer import AutoTimer
 from module.FfmThread import get_real_url, change_status, recording, endRecord, get_filename
 
 from module.HuYaList import HuYaList
@@ -22,7 +25,59 @@ class mywindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(mywindow, self).__init__()
         self.setupUi(self)
+
         self.sql = SqlSer()
+
+    def auto_bt(self):
+        # 将格式字符串转换为时间戳
+        localtime = time.localtime(time.time())
+        ticks = time.time()
+        tm_year = time.strftime("%Y-%m-%d", time.localtime())
+        start = tm_year + " 17:55:00"
+        end = tm_year + " 01:55:00"
+        startTime = time.mktime(time.strptime(start, "%Y-%m-%d %H:%M:%S"))
+        endTime = time.mktime(time.strptime(end, "%Y-%m-%d %H:%M:%S"))
+        print(ticks,startTime,endTime)
+        # self.list_bt()
+        # self.timer = AutoTimer("aaa",self.bbb,self.ccc)
+        # self.timer.start()
+
+    def bbb(self):
+        print("bbb函数执行")
+    def ccc(self):
+        print("ccc函数执行")
+
+    """
+    获取直播列表
+    """
+
+    def list_bt(self):
+
+        print("点击按钮 视频列表")
+        self.huyalist = HuYaList("https://www.huya.com/880243")
+        self.huyalist.start()
+        self.huyalist.trigger.connect(self.UpText)
+
+    """
+    直播列表回调
+    @list datas:  主播预告列表
+    """
+
+    def UpText(self, datas):
+        self.datas = datas
+        i = 0
+        test = 0  # 当前正在直播的位置
+        for v in datas:
+            playtime = v['playtime']
+            if playtime.find("直播") >= 0:
+                test = i
+            self.listWidget.addItem(v['roomid'] + v['playtime'] + v['playname'])
+            i = i + 1
+        self.listWidget.setCurrentRow(test)
+        self.roomlineE.setText(datas[test]['roomid'])
+        self.path_lineE.setText("H:\\test")
+        self.label_2.setText("直播列表获取成功，一切准备就绪。")
+
 
     """
     开始捕获视频
@@ -55,7 +110,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
     def end_bt(self):
         global play_state
-        # 这里增加 文件名 和 写入数据库
+
         self.thread1 = endRecord()
         self.thread1.start()
         self.label_2.setText("结束捕获视频。")
@@ -65,37 +120,6 @@ class mywindow(QMainWindow, Ui_MainWindow):
         print(filename)  # 2020-06-30-142402.mp4
         n = self.listWidget.currentRow()
         self.sql.addData(self.datas[n], filename)
-
-    """
-    获取直播列表
-    """
-
-    def list_bt(self):
-
-        print("点击按钮 视频列表")
-        self.huyalist = HuYaList("https://www.huya.com/880243")
-        self.huyalist.start()
-        self.huyalist.trigger.connect(self.UpText)
-
-    """
-    直播列表回调
-    @list datas:  主播预告列表
-    """
-
-    def UpText(self, datas):
-        self.datas = datas
-        i = 0
-        test = 0  # 当前正在直播的位置
-        for v in datas:
-            playtime = v['playtime']
-            if playtime.find("直播") >= 0:
-                test = i
-            self.listWidget.addItem(v['roomid'] + v['playtime'] + v['playname'])
-            i = i + 1
-        self.listWidget.setCurrentRow(test)
-        self.roomlineE.setText(datas[test]['roomid'])
-        self.path_lineE.setText("H:\\test")
-        self.label_2.setText("直播列表获取成功，一切准备就绪。")
 
     def pre_bt(self):
 
@@ -134,6 +158,7 @@ if __name__ == '__main__':
     w.end_Button.clicked.connect(w.end_bt)
     w.pre_Button.clicked.connect(w.pre_bt)
     w.next_Button.clicked.connect(w.next_bt)
+    w.auto_Button.clicked.connect(w.auto_bt)
     # 设置窗口的标题
     w.setWindowTitle('虎牙hls数据捕捉1.0')
     # 显示在屏幕上

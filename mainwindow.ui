@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>529</width>
+    <width>650</width>
     <height>335</height>
    </rect>
   </property>
@@ -149,6 +149,19 @@
     </property>
     <property name="text">
      <string>直播列表</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="auto_Button">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>40</y>
+      <width>75</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>自动捕获</string>
     </property>
    </widget>
   </widget>
