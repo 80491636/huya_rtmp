@@ -31,7 +31,7 @@ class AutoTimer(QThread):
             end = tm_year + " 01:55:00"
             startTime = time.mktime(time.strptime(start, "%Y-%m-%d %H:%M:%S"))
             endTime = time.mktime(time.strptime(end, "%Y-%m-%d %H:%M:%S"))
-            print(ticks,startTime,endTime)
+            # print(ticks,startTime,endTime)
             if ticks < startTime and ticks > endTime:
                 return
             tm_hour = localtime.tm_hour

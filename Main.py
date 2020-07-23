@@ -33,6 +33,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
         self.timer = AutoTimer(self.start_bt,self.end_bt)
         self.timer.start()
         self.timer.trigger.connect(self.endauto)
+        self.label_2.setText("开启自动捕获视频。")
 
     def endauto(self,t):
         print(t)
@@ -87,9 +88,12 @@ class mywindow(QMainWindow, Ui_MainWindow):
         rid = self.roomlineE.text()
         # self.label.setText("房间号：" + rid.strip())
         real_url = get_real_url(rid.strip())  # 房间源地址
+        if( type(real_url) != list):
+            print("无法开启录制！！！real_rul:",real_url)
+            return
         real_url = real_url[0]
-        print(rid.strip(), real_url)
-        self.change = change_status('https://m.huya.com/' + str(rid))
+        print("房间号：",rid.strip(),"房间视频源：", real_url)
+        self.change = change_status('https://www.huya.com/' + str(rid))
         self.change.start()
         # 这个线程没有结束
         self.ffm = recording(real_url, self.path_lineE.text())
@@ -112,8 +116,9 @@ class mywindow(QMainWindow, Ui_MainWindow):
 
         filename = get_filename()
         print(filename)  # 2020-06-30-142402.mp4
-        n = self.listWidget.currentRow()
-        self.sql.addData(self.datas[n], filename)
+        if hasattr(self,'datas'):
+            n = self.listWidget.currentRow()
+            self.sql.addData(self.datas[n], filename)
 
     def pre_bt(self):
 

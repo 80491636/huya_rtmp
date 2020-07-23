@@ -72,6 +72,8 @@ def prepare(flv_url, file_path):
     filename = filename.strftime('%Y-%m-%d-%H%M%S')
     filename = filename + '.mp4'
     print(os.path.join(file_path, filename))  # 文件名称类似'%Y-%m-%d%H:%M:%S.flv'格式
+    print('ffmpeg -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36" -i {} -acodec copy -bsf:v h264_mp4toannexb -vcodec copy {}'.format(
+            '"%s"' % flv_url, os.path.join(file_path, filename)))
     live_video = subprocess.Popen(
         'ffmpeg -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.113 Safari/537.36" -i {} -acodec copy -bsf:v h264_mp4toannexb -vcodec copy {}'.format(
             '"%s"' % flv_url, os.path.join(file_path, filename)), shell=True, stdin=subprocess.PIPE,
@@ -140,6 +142,10 @@ class endRecord(QThread):
         is_exit = True
         if live_video == None:
             return
-        live_video.stdin.write('q'.encode("GBK"))
-        live_video.communicate()
+        print("live_video",live_video)
+        try:
+            live_video.stdin.write('q'.encode("GBK"))
+            live_video.communicate()
+        except Exception as e:
+            print("ffmpeg结束遇到未知错误：",e)
         print("结束 捕获")
