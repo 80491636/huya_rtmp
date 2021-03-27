@@ -49,7 +49,7 @@ class mywindow(QMainWindow, Ui_MainWindow):
     def list_bt(self):
 
         print("点击按钮 视频列表")
-        self.huyalist = HuYaList("https://www.huya.com/880243")
+        self.huyalist = HuYaList("https://www.huya.com/880351")
         self.huyalist.start()
         self.huyalist.trigger.connect(self.UpText)
 
